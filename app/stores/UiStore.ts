@@ -93,6 +93,9 @@ class UiStore {
   @observable
   debugSafeArea = false;
 
+  @observable
+  isZenModeActive = false;
+
   /** Data for the currently active presentation, if any. */
   @observable
   presentationData: {
@@ -433,7 +436,7 @@ class UiStore {
    */
   @computed
   get sidebarIsClosed() {
-    return this.sidebarCollapsed || sidebarHidden;
+    return this.isZenModeActive || this.sidebarCollapsed || sidebarHidden;
   }
 
   @computed
@@ -461,6 +464,11 @@ class UiStore {
       theme: this.theme,
     };
   }
+
+  @action
+  toggleZenMode = () => {
+    this.isZenModeActive = !this.isZenModeActive;
+  };
 
   private persist = () => {
     Storage.set(UI_STORE, this.asJson);

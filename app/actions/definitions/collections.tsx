@@ -245,6 +245,46 @@ export const sortCollection = createActionWithChildren({
       },
     }),
     createAction({
+      name: ({ t }) => t("Publication: newest first"),
+      section: ActiveCollectionSection,
+      selected: ({ getActiveModel }) => {
+        const collection = getActiveModel(Collection);
+        return (
+          collection?.sort.field === "publishedAt" &&
+          collection?.sort.direction === "desc"
+        );
+      },
+      perform: ({ getActiveModel }) => {
+        const collection = getActiveModel(Collection);
+        return collection?.save({
+          sort: {
+            field: "publishedAt",
+            direction: "desc",
+          },
+        });
+      },
+    }),
+    createAction({
+      name: ({ t }) => t("Publication: oldest first"),
+      section: ActiveCollectionSection,
+      selected: ({ getActiveModel }) => {
+        const collection = getActiveModel(Collection);
+        return (
+          collection?.sort.field === "publishedAt" &&
+          collection?.sort.direction === "asc"
+        );
+      },
+      perform: ({ getActiveModel }) => {
+        const collection = getActiveModel(Collection);
+        return collection?.save({
+          sort: {
+            field: "publishedAt",
+            direction: "asc",
+          },
+        });
+      },
+    }),
+    createAction({
       name: ({ t }) => t("Manual sort"),
       section: ActiveCollectionSection,
       selected: ({ getActiveModel }) => {

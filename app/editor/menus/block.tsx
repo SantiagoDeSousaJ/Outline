@@ -247,7 +247,7 @@ export default function blockMenuItems(
       name: "container_toggle",
       title: dictionary.toggleBlock,
       icon: <CollapseIcon />,
-      keywords: "toggle collapsible collapse fold",
+      keywords: "toggle collapsible collapse fold spoiler desplegable",
     },
   ];
 

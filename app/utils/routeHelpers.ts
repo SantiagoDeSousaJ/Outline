@@ -19,10 +19,6 @@ export function draftsPath(): string {
   return "/drafts";
 }
 
-export function betPath(): string {
-  return "/bet";
-}
-
 export function archivePath(): string {
   return "/archive";
 }

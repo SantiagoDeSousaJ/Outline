@@ -17,7 +17,6 @@ import { homePath, searchPath } from "~/utils/routeHelpers";
 import TeamLogo from "../TeamLogo";
 import Tooltip from "../Tooltip";
 import Sidebar from "./Sidebar";
-import BetLink from "./components/BetLink";
 import ArchiveLink from "./components/ArchiveLink";
 import Collections from "./components/Collections";
 import { DraftsLink } from "./components/DraftsLink";
@@ -125,7 +124,6 @@ function AppSidebar() {
             {can.createDocument && (
               <Section auto>
                 <ArchiveLink />
-                <BetLink />
               </Section>
             )}
             <Section>

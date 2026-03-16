@@ -1,6 +1,6 @@
 import { observer } from "mobx-react";
 import { TableOfContentsIcon, EditIcon } from "outline-icons";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import styled, { useTheme } from "styled-components";
@@ -40,6 +40,8 @@ import PublicBreadcrumb from "./PublicBreadcrumb";
 import ShareButton from "./ShareButton";
 import { AppearanceAction } from "~/components/Sharing/components/Actions";
 import useShare from "@shared/hooks/useShare";
+import { ProsemirrorHelper } from "~/models/helpers/ProsemirrorHelper";
+import { calculateReadingTime } from "@shared/utils/readingTime";
 import { type Editor } from "~/editor";
 import { ChangesNavigation } from "./ChangesNavigation";
 
@@ -80,6 +82,10 @@ function DocumentHeader({
   const isMobileMedia = useMobile();
   const isRevision = !!revision;
   const isEditingFocus = useEditingFocus();
+  const readingTimeMinutes = useMemo(() => {
+    const plainText = ProsemirrorHelper.toPlainText(document);
+    return calculateReadingTime(plainText);
+  }, [document.data]);
 
   // Set CSS variable for header offset (used by sticky table headers)
   useEffect(() => {
@@ -246,8 +252,17 @@ function DocumentHeader({
                 color={document.color ?? undefined}
               />
             )}
-            {document.title}
-            {document.isArchived && <Badge>{t("Archived")}</Badge>}
+            <Flex gap={4} column>
+              <Flex gap={4} align="center">
+                {document.title}
+                {document.isArchived && <Badge>{t("Archived")}</Badge>}
+              </Flex>
+              {readingTimeMinutes > 0 && (
+                <span style={{ color: theme.textSecondary, fontSize: 13 }}>
+                  {t("{{ minutes }} min read", { minutes: readingTimeMinutes })}
+                </span>
+              )}
+            </Flex>
           </Flex>
         }
         actions={({ isCompact }) => (

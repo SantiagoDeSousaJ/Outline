@@ -13,7 +13,6 @@ import useCurrentTeam from "~/hooks/useCurrentTeam";
 import usePolicy from "~/hooks/usePolicy";
 import lazy from "~/utils/lazyWithRetry";
 import {
-  betPath,
   archivePath,
   draftsPath,
   homePath,
@@ -28,7 +27,6 @@ import env from "~/env";
 
 const SettingsRoutes = lazy(() => import("./settings"));
 const Archive = lazy(() => import("~/scenes/Archive"));
-const Bet = lazy(() => import("~/scenes/Bet"));
 const Collection = lazy(() => import("~/scenes/Collection"));
 const Document = lazy(() => import("~/scenes/Document"));
 const Drafts = lazy(() => import("~/scenes/Drafts"));
@@ -71,9 +69,6 @@ function AuthenticatedRoutes() {
           <Switch>
             {can.createDocument && (
               <Route exact path={draftsPath()} component={Drafts} />
-            )}
-            {can.createDocument && (
-              <Route exact path={betPath()} component={Bet} />
             )}
             {can.createDocument && (
               <Route exact path={archivePath()} component={Archive} />

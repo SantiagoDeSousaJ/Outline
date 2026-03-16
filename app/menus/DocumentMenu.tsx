@@ -59,8 +59,7 @@ function DocumentMenu({
   const user = useCurrentUser();
   const isMobile = useMobile();
   const can = usePolicy(document);
-
-  const { userMemberships, groupMemberships, subscriptions, pins } =
+  const { ui, userMemberships, groupMemberships, subscriptions, pins } =
     useStores();
 
   const isShared = !!(
@@ -133,6 +132,10 @@ function DocumentMenu({
     onSelectTemplate,
   });
 
+  const handleExportPDF = React.useCallback(() => {
+    window.print();
+  }, []);
+
   const toggleSwitches = React.useMemo<React.ReactNode>(() => {
     if (!can.update || !(showDisplayOptions || showToggleEmbeds)) {
       return;
@@ -142,6 +145,34 @@ function DocumentMenu({
       <>
         <MenuSeparator />
         <DisplayOptions>
+          <Style>
+            <ToggleMenuItem
+              width={26}
+              height={14}
+              label={
+                ui.isZenModeActive
+                  ? t("Exit focus mode")
+                  : t("Enter focus mode")
+              }
+              labelPosition="left"
+              checked={ui.isZenModeActive}
+              onChange={() => ui.toggleZenMode()}
+            />
+          </Style>
+        <MenuSeparator />
+          <Style>
+            <button
+              type="button"
+              onClick={handleExportPDF}
+              style={{
+                all: "unset",
+                cursor: "var(--pointer)",
+                color: "inherit",
+              }}
+            >
+              {t("Export as PDF")}
+            </button>
+          </Style>
           {can.updateInsights && (
             <Style>
               <ToggleMenuItem
@@ -185,6 +216,7 @@ function DocumentMenu({
     t,
     can.update,
     can.updateInsights,
+    ui.isZenModeActive,
     document.embedsDisabled,
     document.fullWidth,
     document.insightsEnabled,

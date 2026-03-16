@@ -46,6 +46,7 @@ import {
   updateDocumentPath,
 } from "~/utils/routeHelpers";
 import Container from "./Container";
+import SelectionTooltip from "./SelectionTooltip";
 import Contents from "./Contents";
 import Editor from "./Editor";
 import Header from "./Header";
@@ -54,6 +55,59 @@ import References from "./References";
 import RevisionViewer from "./RevisionViewer";
 
 const AUTOSAVE_DELAY = 3000;
+
+const ReadingProgressBar: React.FC = () => {
+  const [progress, setProgress] = React.useState(0);
+  const frameRef = React.useRef<number | null>(null);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      if (frameRef.current !== null) {
+        return;
+      }
+
+      frameRef.current = window.requestAnimationFrame(() => {
+        const { scrollY, innerHeight } = window;
+        const { scrollHeight } = document.documentElement;
+        const maxScrollable = scrollHeight - innerHeight;
+
+        if (maxScrollable <= 0) {
+          setProgress(0);
+        } else {
+          const next = Math.min(
+            100,
+            Math.max(0, (scrollY / maxScrollable) * 100)
+          );
+          setProgress(next);
+        }
+
+        frameRef.current = null;
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (frameRef.current !== null) {
+        window.cancelAnimationFrame(frameRef.current);
+      }
+    };
+  }, []);
+
+  return <ProgressBar aria-hidden="true" $progress={progress} />;
+};
+
+const ProgressBar = styled.div<{ $progress: number }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: ${({ $progress }) => `${$progress}%`};
+  background-color: ${(props) => props.theme.primary ?? props.theme.accent};
+  z-index: 999;
+  pointer-events: none;
+`;
 
 type Params = {
   documentSlug: string;
@@ -524,6 +578,8 @@ class DocumentScene extends React.Component<Props> {
           column
           auto
         >
+          <ReadingProgressBar />
+          <SelectionTooltip />
           <PageTitle title={title} favicon={favicon} />
           {(this.isUploading || this.isSaving) && <LoadingIndicator />}
           <Container column>

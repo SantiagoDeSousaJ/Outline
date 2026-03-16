@@ -9,6 +9,7 @@ import type Document from "~/models/Document";
 import DocumentsLoader from "~/components/DocumentsLoader";
 import { ResizingHeightContainer } from "~/components/ResizingHeightContainer";
 import Text from "~/components/Text";
+import { SearchIcon } from "outline-icons";
 import useStores from "~/hooks/useStores";
 import history from "~/utils/history";
 import useCollectionDocuments from "../hooks/useCollectionDocuments";
@@ -44,6 +45,7 @@ function CollectionLinkChildren({
   const { t } = useTranslation();
   const childDocuments = useCollectionDocuments(collection, documents.active);
   const [showing, setShowing] = useState(pageSize);
+  const [filterQuery, setFilterQuery] = useState("");
 
   useEffect(() => {
     if (!expanded) {
@@ -62,12 +64,30 @@ function CollectionLinkChildren({
       <DynamicDropCursor collection={collection} />
       <DocumentsLoader collection={collection} enabled={expanded}>
         {children}
+        <FilterContainer>
+          <FilterIcon>
+            <SearchIcon size={12} />
+          </FilterIcon>
+          <FilterInput
+            type="text"
+            value={filterQuery}
+            onChange={(event) => setFilterQuery(event.target.value)}
+            placeholder={t("Filter documents")}
+          />
+        </FilterContainer>
         {!childDocuments && (
           <ResizingHeightContainer hideOverflow>
             <Loading />
           </ResizingHeightContainer>
         )}
-        {childDocuments?.slice(0, showing).map((node, index) => (
+        {childDocuments
+          ?.filter((node) =>
+            node.title
+              .toLowerCase()
+              .includes(filterQuery.trim().toLowerCase())
+          )
+          .slice(0, showing)
+          .map((node, index) => (
           <DocumentLink
             key={node.id}
             node={node}
@@ -79,11 +99,19 @@ function CollectionLinkChildren({
             index={index}
           />
         ))}
-        {childDocuments?.length === 0 && !children && (
+        {childDocuments &&
+          childDocuments.filter((node) =>
+            node.title
+              .toLowerCase()
+              .includes(filterQuery.trim().toLowerCase())
+          ).length === 0 &&
+          !children && (
           <SidebarLink
             label={
               <Text type="tertiary" size="small" italic>
-                {t("Empty")}
+                {filterQuery.trim()
+                  ? t("No se encontraron documentos")
+                  : t("Empty")}
               </Text>
             }
             onClick={() => history.push(collection.url)}
@@ -120,6 +148,33 @@ const DynamicDropCursor = observer(
 const Loading = styled(PlaceholderCollections)`
   margin-left: 44px;
   min-height: 90px;
+`;
+
+const FilterContainer = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 4px 12px 4px 44px;
+  gap: 4px;
+`;
+
+const FilterIcon = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${(props) => props.theme.textTertiary};
+`;
+
+const FilterInput = styled.input`
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: ${(props) => props.theme.textSecondary};
+  font-size: 13px;
+
+  &::placeholder {
+    color: ${(props) => props.theme.textTertiary};
+  }
 `;
 
 export default observer(CollectionLinkChildren);
