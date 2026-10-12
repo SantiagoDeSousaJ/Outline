@@ -17869,7 +17869,7 @@ __metadata:
     redlock: "npm:^5.0.0-beta.2"
     reflect-metadata: "npm:^0.2.2"
     refractor: "npm:^3.6.0"
-    request-filtering-agent: "npm:^3.2.0"
+    request-filtering-agent: "npm:^3.2.1"
     resolve-path: "npm:^1.4.0"
     rimraf: "npm:^2.5.4"
     rollup-plugin-webpack-stats: "npm:2.1.6"
@@ -19803,12 +19803,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"request-filtering-agent@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "request-filtering-agent@npm:3.2.0"
+"request-filtering-agent@npm:^3.2.1":
+  version: 3.2.1
+  resolution: "request-filtering-agent@npm:3.2.1"
   dependencies:
     ipaddr.js: "npm:^2.1.0"
-  checksum: 10c0/f32128c067ca4b700c7e02b41fdd2db430707ec285a2fb44c347f0d9f42326aeb9c32c1986d20c6354630d1368c2fdb1933928a657cec57d637dd895b08cca07
+  checksum: 10c0/9d2900afd0b1021badbeba98d2611f582bee4b58aa5759d8746b0f5134983ecfc413983bec0ec087d50f3b0d3507934a7c0c9289929d870fadca0204c0103aff
   languageName: node
   linkType: hard
 
